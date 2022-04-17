@@ -20,15 +20,9 @@ class PaintView @JvmOverloads constructor(
     private var path = Path()
     private var paintBrush = Paint()
 
-    companion object{
-       private val xyList = ArrayList<Pair<Float, Float>>()
-        val observerXYList: Observable<Pair<Float, Float>> = Observable.create { emit ->
-            xyList.forEach {
-                emit.onNext(it)
-                Thread.sleep(50L)
-            }
-            emit.onComplete()
-        }
+    companion object {
+        private val xyList = ArrayList<Pair<Float, Float>>()
+        val observerXYList: Observable<Pair<Float, Float>> = Observable.fromIterable(xyList)
     }
 
     init {
