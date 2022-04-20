@@ -1,4 +1,4 @@
-package ru.serget.mydrivecar
+package ru.serget.mydrivecar.view.custom
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,7 +9,7 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import io.reactivex.rxjava3.core.Observable
+import ru.serget.mydrivecar.view.main.MainActivity
 
 class PaintView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
@@ -19,11 +19,6 @@ class PaintView @JvmOverloads constructor(
     private val pathList = ArrayList<Path>()
     private var path = Path()
     private var paintBrush = Paint()
-
-    companion object {
-        private val xyList = ArrayList<Pair<Float, Float>>()
-        val observerXYList: Observable<Pair<Float, Float>> = Observable.fromIterable(xyList)
-    }
 
     init {
         paintBrush.isAntiAlias = true
@@ -41,18 +36,14 @@ class PaintView @JvmOverloads constructor(
             MotionEvent.ACTION_DOWN -> {
                 path.reset()
                 pathList.clear()
-                xyList.clear()
-                xyList.add(Pair(x, y))
+                (context as MainActivity).clearPosition()
                 path.moveTo(x, y)
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
                 path.lineTo(x, y)
-                xyList.add(Pair(x, y))
+                (context as MainActivity).setPosition(Pair(x, y))
                 pathList.add(path)
-            }
-            MotionEvent.ACTION_UP -> {
-                // кинуть observable в модель
             }
         }
         postInvalidate()
