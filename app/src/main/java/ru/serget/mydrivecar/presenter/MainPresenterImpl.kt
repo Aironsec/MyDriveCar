@@ -11,8 +11,12 @@ class MainPresenterImpl<V : IView>(
 ) : IPresenter<V> {
 
     private var currentView: IView? = null
+    private val compensator: Float = 60f
     private val xyList: ArrayList<Pair<Float, Float>> = ArrayList()
     private val observerXYList: Observable<Pair<Float, Float>> = Observable.fromIterable(xyList)
+
+    private fun correctionPosition(point: Pair<Float, Float>): Pair<Float, Float> =
+        Pair(point.first - compensator, point.second - compensator)
 
     override fun attachView(view: V) {
         if (currentView != view)
@@ -30,7 +34,7 @@ class MainPresenterImpl<V : IView>(
     }
 
     override fun setPosition(point: Pair<Float, Float>) {
-        xyList.add(point)
+        xyList.add(correctionPosition(point))
     }
 
     override fun getPosition() {
